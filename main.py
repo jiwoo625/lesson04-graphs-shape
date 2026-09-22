@@ -61,3 +61,34 @@ fig2.update_traces(
 st.plotly_chart(fig2, width="stretch")
 
 st.text_input("이 그래프로 알 수 있는 것", key="note2")
+
+
+# ── 그래프 3. 총 관객 분포 (히스토그램) ──
+st.header("3. 총 관객 분포")
+
+fig3 = px.histogram(
+    df,
+    x="total_audi",
+    nbins=15,
+    labels={
+        "total_audi": "총 관객",
+        "count": "영화 편수"
+    }
+)
+
+fig3.update_traces(
+    hovertemplate="총 관객 구간: %{x}<br>영화 편수: %{y}편<extra></extra>"
+)
+
+st.plotly_chart(fig3, width="stretch")
+
+
+# 가장 관객이 많은 영화 찾기
+most_popular = df.loc[df["total_audi"].idxmax()]
+
+st.write(
+    f"**이 그래프로 알 수 있는 것:** "
+    f"대부분의 영화가 어느 총 관객 구간에 몰려 있는지 확인할 수 있습니다. "
+    f"가장 관객이 많은 영화는 **{most_popular['movieNm']}**이며, "
+    f"총 관객은 **{most_popular['total_audi']:,}명**입니다."
+)
