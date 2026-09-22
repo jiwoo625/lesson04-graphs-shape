@@ -63,7 +63,7 @@ st.plotly_chart(fig2, width="stretch")
 st.text_input("이 그래프로 알 수 있는 것", key="note2")
 
 
-# ── 그래프 3. 총 관객 분포 (히스토그램) ──
+# ── 그래프 3. 총 관객 분포 ──
 st.header("3. 총 관객 분포")
 
 fig3 = px.histogram(
@@ -82,8 +82,6 @@ fig3.update_traces(
 
 st.plotly_chart(fig3, width="stretch")
 
-
-# 가장 관객이 많은 영화 찾기
 most_popular = df.loc[df["total_audi"].idxmax()]
 
 st.write(
@@ -92,3 +90,33 @@ st.write(
     f"가장 관객이 많은 영화는 **{most_popular['movieNm']}**이며, "
     f"총 관객은 **{most_popular['total_audi']:,}명**입니다."
 )
+
+
+# ── 그래프 4. 개봉일 스크린수와 총 관객의 관계 ──
+st.header("4. 개봉일 스크린수와 총 관객의 관계")
+
+fig4 = px.scatter(
+    df,
+    x="first_scrn",
+    y="total_audi",
+    color="장르",
+    hover_name="movieNm",
+    labels={
+        "first_scrn": "개봉일 스크린수",
+        "total_audi": "총 관객",
+        "장르": "장르"
+    }
+)
+
+fig4.update_traces(
+    hovertemplate=(
+        "<b>%{hovertext}</b><br>"
+        "개봉일 스크린수: %{x:,}개<br>"
+        "총 관객: %{y:,}명"
+        "<extra></extra>"
+    )
+)
+
+st.plotly_chart(fig4, width="stretch")
+
+st.text_input("이 그래프로 알 수 있는 것", key="note4")
