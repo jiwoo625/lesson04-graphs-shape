@@ -120,3 +120,38 @@ fig4.update_traces(
 st.plotly_chart(fig4, width="stretch")
 
 st.text_input("이 그래프로 알 수 있는 것", key="note4")
+
+
+# ── 그래프 5. 장르별 총 관객 분포 (박스플롯) ──
+st.header("5. 장르별 총 관객 분포 (박스플롯)")
+
+# 영화가 10편 이상인 장르만 선택
+genre_counts = df["장르"].value_counts()
+valid_genres = genre_counts[genre_counts >= 10].index
+
+box_df = df[df["장르"].isin(valid_genres)]
+
+fig5 = px.box(
+    box_df,
+    x="장르",
+    y="total_audi",
+    points="outliers",
+    hover_name="movieNm",
+    labels={
+        "장르": "장르",
+        "total_audi": "총 관객"
+    }
+)
+
+fig5.update_traces(
+    hovertemplate=(
+        "<b>%{hovertext}</b><br>"
+        "장르: %{x}<br>"
+        "총 관객: %{y:,}명"
+        "<extra></extra>"
+    )
+)
+
+st.plotly_chart(fig5, width="stretch")
+
+st.text_input("이 그래프로 알 수 있는 것", key="note5")
