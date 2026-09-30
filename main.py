@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 import plotly.express as px
@@ -15,16 +14,18 @@ DATA_URL = "https://raw.githubusercontent.com/greatsong/modudata/main/data/kobis
 
 @st.cache_data
 def load_data():
-    # 1년간 박스오피스 10위권에 든 영화 216편의 요약표를 불러옵니다
     df = pd.read_csv(DATA_URL)
-
-    # 장르가 세로막대 기호(|)로 여러 개 적힌 영화는 첫 번째 장르만 씁니다
-    df["장르"] = df["genre"].str.split("|").str[0]
-
+    df["장르"] = df["genre"].fillna("미상").str.split("|").str[0]
     return df
 
 
-df = load_data()
+try:
+    df = load_data()
+
+except Exception:
+    st.error("데이터를 불러오지 못했습니다.")
+    st.write("현재 지정된 GitHub CSV 주소에 접근할 수 없습니다.")
+    st.stop()
 
 
 # ── 그래프 1. 장르별 영화 편수 도넛 ──
@@ -41,7 +42,6 @@ fig = px.pie(
     hole=0.45,
 )
 
-# 조각에 마우스를 올리면 편수와 비율이 보이게 합니다
 fig.update_traces(
     hovertemplate="%{label}<br>%{value}편 (%{percent})<extra></extra>"
 )
@@ -52,17 +52,11 @@ st.plotly_chart(
 )
 
 
-# '이 그래프로 알 수 있는 것' 한 문장을 적는 자리
-
 st.text_input(
     "이 그래프로 알 수 있는 것",
     key="note1"
 )
 
-
 st.divider()
-
-
-# 앞으로 그래프를 계속 추가할 구역
 
 st.header("2. (다음 그래프를 여기에 추가)")
