@@ -1,11 +1,6 @@
-
-import io
-
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-import requests
-
 
 st.set_page_config(
     page_title="영화 데이터 그래프 도감 2 - 분포와 관계",
@@ -14,22 +9,13 @@ st.set_page_config(
 
 st.title("영화 데이터 그래프 도감 2 - 분포와 관계")
 
-DATA_URL = "https://raw.githubusercontent.com/greatsong/modudata/main/data/kobis_movies.csv"
-
 
 @st.cache_data
 def load_data():
-    # 1년간 박스오피스 10위권에 든 영화 216편의 요약표를 불러옵니다
-    response = requests.get(
-        DATA_URL,
-        timeout=20,
-        headers={"User-Agent": "Mozilla/5.0"}
-    )
-    response.raise_for_status()
+    # main.py와 같은 폴더에 있는 CSV 파일을 불러옵니다.
+    df = pd.read_csv("kobis_movies.csv")
 
-    df = pd.read_csv(io.BytesIO(response.content))
-
-    # 장르가 세로막대 기호(|)로 여러 개 적힌 영화는 첫 번째 장르만 씁니다
+    # 여러 장르가 |로 구분되어 있으면 첫 번째 장르만 사용
     df["장르"] = (
         df["genre"]
         .fillna("미상")
@@ -46,7 +32,6 @@ df = load_data()
 
 
 # ── 그래프 1. 장르별 영화 편수 도넛 ──
-
 st.header("1. 장르별 영화 편수 (도넛)")
 
 genre_count = df["장르"].value_counts().reset_index()
@@ -59,7 +44,6 @@ fig = px.pie(
     hole=0.45,
 )
 
-# 조각에 마우스를 올리면 편수와 비율이 보이게 합니다
 fig.update_traces(
     hovertemplate="%{label}<br>%{value}편 (%{percent})<extra></extra>"
 )
@@ -79,7 +63,4 @@ st.text_input(
 
 st.divider()
 
-
-# 앞으로 그래프를 계속 추가할 구역
 st.header("2. (다음 그래프를 여기에 추가)")
-
